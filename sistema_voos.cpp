@@ -1,4 +1,3 @@
-# Projeto-astronauta
 #include <iostream>
 #include <string>
 #include <vector>
@@ -14,6 +13,10 @@ public:
     bool morto;
     std::vector<int> voosParticipados;
 
+    // Construtor padrão sem argumentos
+    Astronauta() : idade(0), disponivel(true), morto(false) {}
+
+    // Construtor com argumentos
     Astronauta(std::string c, std::string n, int i) : cpf(c), nome(n), idade(i), disponivel(true), morto(false) {}
 };
 
@@ -26,6 +29,10 @@ public:
     bool finalizado;
     bool sucesso;
 
+    // Construtor padrão sem argumentos
+    Voo() : codigo(0), emPlanejamento(true), emCurso(false), finalizado(false), sucesso(false) {}
+
+    // Construtor com argumento
     Voo(int c) : codigo(c), emPlanejamento(true), emCurso(false), finalizado(false), sucesso(false) {}
 };
 
@@ -121,7 +128,9 @@ public:
 
     void listarVoos() const {
         std::cout << "Voos Planejados:" << std::endl;
-        for (const auto& [codigo, voo] : voos) {
+        for (auto it = voos.begin(); it != voos.end(); ++it) {
+            const auto& codigo = it->first;
+            const auto& voo = it->second;
             if (voo.emPlanejamento) {
                 std::cout << "Voo " << codigo << ": ";
                 for (const auto& cpf : voo.passageiros) {
@@ -130,8 +139,11 @@ public:
                 std::cout << std::endl;
             }
         }
+
         std::cout << "Voos em Curso:" << std::endl;
-        for (const auto& [codigo, voo] : voos) {
+        for (auto it = voos.begin(); it != voos.end(); ++it) {
+            const auto& codigo = it->first;
+            const auto& voo = it->second;
             if (voo.emCurso) {
                 std::cout << "Voo " << codigo << ": ";
                 for (const auto& cpf : voo.passageiros) {
@@ -140,8 +152,11 @@ public:
                 std::cout << std::endl;
             }
         }
+
         std::cout << "Voos Finalizados:" << std::endl;
-        for (const auto& [codigo, voo] : voos) {
+        for (auto it = voos.begin(); it != voos.end(); ++it) {
+            const auto& codigo = it->first;
+            const auto& voo = it->second;
             if (voo.finalizado) {
                 std::cout << "Voo " << codigo << ": ";
                 for (const auto& cpf : voo.passageiros) {
@@ -154,7 +169,8 @@ public:
 
     void listarAstronautasMortos() const {
         std::cout << "Astronautas Mortos:" << std::endl;
-        for (const auto& [cpf, astronauta] : astronautas) {
+        for (auto it = astronautas.begin(); it != astronautas.end(); ++it) {
+            const auto& astronauta = it->second;
             if (astronauta.morto) {
                 std::cout << "CPF: " << astronauta.cpf << ", Nome: " << astronauta.nome << ", Voos: ";
                 for (const auto& voo : astronauta.voosParticipados) {
@@ -168,21 +184,81 @@ public:
 
 int main() {
     Sistema sistema;
-    
-    // Exemplos de uso
-    sistema.cadastrarAstronauta("123", "Alice", 30);
-    sistema.cadastrarAstronauta("456", "Bob", 35);
-    
-    sistema.cadastrarVoo(1);
-    sistema.adicionarAstronautaEmVoo("123", 1);
-    sistema.adicionarAstronautaEmVoo("456", 1);
-    
-    sistema.lancarVoo(1);
-    
-    sistema.finalizarVoo(1);
-    
-    sistema.listarVoos();
-    sistema.listarAstronautasMortos();
-    
+
+    char opcao;
+    do {
+        std::cout << "Menu:\n"
+                  << "1. Cadastrar Astronauta\n"
+                  << "2. Cadastrar Voo\n"
+                  << "3. Adicionar Astronauta em Voo\n"
+                  << "4. Lançar Voo\n"
+                  << "5. Finalizar Voo\n"
+                  << "6. Listar Voos\n"
+                  << "7. Listar Astronautas Mortos\n"
+                  << "0. Sair\n"
+                  << "Escolha uma opção: ";
+        std::cin >> opcao;
+        std::cin.ignore(); // Limpar o buffer do teclado
+
+        switch (opcao) {
+            case '1': {
+                std::string cpf, nome;
+                int idade;
+                std::cout << "CPF: ";
+                std::getline(std::cin, cpf);
+                std::cout << "Nome: ";
+                std::getline(std::cin, nome);
+                std::cout << "Idade: ";
+                std::cin >> idade;
+                sistema.cadastrarAstronauta(cpf, nome, idade);
+                break;
+            }
+            case '2': {
+                int codigo;
+                std::cout << "Código do Voo: ";
+                std::cin >> codigo;
+                sistema.cadastrarVoo(codigo);
+                break;
+            }
+            case '3': {
+                std::string cpf;
+                int codigo;
+                std::cout << "CPF do Astronauta: ";
+                std::getline(std::cin >> std::ws, cpf);
+                std::cout << "Código do Voo: ";
+                std::cin >> codigo;
+                sistema.adicionarAstronautaEmVoo(cpf, codigo);
+                break;
+            }
+            case '4': {
+                int codigo;
+                std::cout << "Código do Voo: ";
+                std::cin >> codigo;
+                sistema.lancarVoo(codigo);
+                break;
+            }
+            case '5': {
+                int codigo;
+                std::cout << "Código do Voo: ";
+                std::cin >> codigo;
+                sistema.finalizarVoo(codigo);
+                break;
+            }
+            case '6':
+                sistema.listarVoos();
+                break;
+            case '7':
+                sistema.listarAstronautasMortos();
+                break;
+            case '0':
+                std::cout << "Encerrando o programa." << std::endl;
+                break;
+            default:
+                std::cout << "Opção inválida." << std::endl;
+                break;
+        }
+
+    } while (opcao != '0');
+
     return 0;
 }
