@@ -140,7 +140,7 @@ public:
             }
         }
 
-        std::cout << "Voos em Curso:" << std::endl;
+        std::cout << "\nVoos Em Curso:" << std::endl;
         for (auto it = voos.begin(); it != voos.end(); ++it) {
             const auto& codigo = it->first;
             const auto& voo = it->second;
@@ -153,7 +153,7 @@ public:
             }
         }
 
-        std::cout << "Voos Finalizados:" << std::endl;
+        std::cout << "\nVoos Finalizados:" << std::endl;
         for (auto it = voos.begin(); it != voos.end(); ++it) {
             const auto& codigo = it->first;
             const auto& voo = it->second;
@@ -187,7 +187,7 @@ int main() {
 
     char opcao;
     do {
-        std::cout << "Menu:\n"
+        std::cout << "\nMenu:\n"
                   << "1. Cadastrar Astronauta\n"
                   << "2. Cadastrar Voo\n"
                   << "3. Adicionar Astronauta em Voo\n"
